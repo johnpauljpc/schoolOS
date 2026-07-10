@@ -1,1 +1,1 @@
-A professional School Management System for secondary schools.
+A Comprehensive School Portal built with Django.
