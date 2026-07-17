@@ -1,0 +1,10 @@
+{% extends 'base.html' %}{% block title %}Teachers{% endblock %}
+{% block content %}
+<div class="page-header"><h1 class="page-header__title">Teachers</h1></div>
+<div class="card card--shadow"><div class="table-container"><table class="table"><thead><tr><th>Name</th><th>Department</th><th>Subjects</th><th>Form Class</th><th>Experience</th></tr></thead><tbody>
+{% for t in teachers %}<tr><td><a href="{% url 'staff:detail' t.staff.pk %}" style="font-weight:600">{{ t.staff.full_name }}</a></td><td>{{ t.staff.department|default:"—" }}</td>
+<td>{% for s in t.subjects.all %}<span class="badge badge-primary" style="margin-right:4px">{{ s.name }}</span>{% empty %}—{% endfor %}</td>
+<td>{{ t.class_assigned|default:"—" }}</td><td>{{ t.years_of_experience }} yr{{ t.years_of_experience|pluralize }}</td></tr>
+{% empty %}<tr><td colspan="5"><div class="empty-state"><div class="empty-state__title">No teachers found</div></div></td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

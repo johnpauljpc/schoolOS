@@ -1,0 +1,16 @@
+{% load static widget_tweaks %}
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Apply for Admission — {{ SCHOOL_NAME }}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/style.css' %}"></head><body style="background:var(--bg-body);padding:40px 20px">
+<div style="max-width:780px;margin:0 auto">
+<div style="text-align:center;margin-bottom:32px"><div class="auth-card__logo" style="margin:0 auto 14px;width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,hsl(224,76%,48%),hsl(160,84%,39%));display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#fff">S</div>
+<h1 style="font-size:26px;font-weight:800;color:var(--text-primary)">Admission Application</h1><p style="color:var(--text-muted)">{{ SCHOOL_NAME }} — {{ SCHOOL_TAGLINE }}</p></div>
+{% if messages %}{% for msg in messages %}<div class="alert alert-{{ msg.tags }}"><div class="alert__body">{{ msg }}</div></div>{% endfor %}{% endif %}
+<div class="card card--shadow"><div class="card__header"><span class="card__title">Personal Information</span></div>
+<div class="card__body"><form method="post" enctype="multipart/form-data" data-loading>{% csrf_token %}
+<div class="form-row">
+{% for field in form %}<div class="form-group"><label class="form-label {% if field.field.required %}required{% endif %}">{{ field.label }}</label>{{ field|add_class:"form-control" }}{% if field.errors %}<div class="form-error">{{ field.errors|join:', ' }}</div>{% endif %}</div>{% endfor %}
+</div>
+<div style="margin-top:20px"><button type="submit" class="btn btn-primary btn-lg">Submit Application</button></div>
+</form></div></div></div>
+</body></html>

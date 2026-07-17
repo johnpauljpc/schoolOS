@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block breadcrumb %}<span class="topbar__breadcrumb-current">Dashboard</span>{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header__left">
+    <h1 class="page-header__title">Good {% now "G" as hour %}{% if hour < 12 %}Morning{% elif hour < 17 %}Afternoon{% else %}Evening{% endif %}, {{ user.first_name }}! 👋</h1>
+    <p class="page-header__subtitle">Here's what's happening at {{ SCHOOL_NAME }} today — {{ today|date:"l, j F Y" }}</p>
+  </div>
+</div>
+
+<!-- Stats Grid -->
+<div class="stat-grid">
+  <div class="stat-card stat-card--blue card--hover">
+    <div class="stat-card__icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+    </div>
+    <div class="stat-card__info">
+      <div class="stat-card__label">Total Students</div>
+      <div class="stat-card__value">{{ total_students|default:"0" }}</div>
+      <div class="stat-card__change stat-card__change--up">+{{ new_students_this_month|default:"0" }} this month</div>
+    </div>
+  </div>
+  <div class="stat-card stat-card--green card--hover">
+    <div class="stat-card__icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </div>
+    <div class="stat-card__info">
+      <div class="stat-card__label">Active Staff</div>
+      <div class="stat-card__value">{{ total_staff|default:"0" }}</div>
+    </div>
+  </div>
+  <div class="stat-card stat-card--orange card--hover">
+    <div class="stat-card__icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+    </div>
+    <div class="stat-card__info">
+      <div class="stat-card__label">Pending Admissions</div>
+      <div class="stat-card__value">{{ pending_admissions|default:"0" }}</div>
+    </div>
+  </div>
+  <div class="stat-card stat-card--teal card--hover">
+    <div class="stat-card__icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+    </div>
+    <div class="stat-card__info">
+      <div class="stat-card__label">Monthly Revenue</div>
+      <div class="stat-card__value">₦{{ monthly_revenue|default:"0"|floatformat:0 }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Content Grid -->
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 8px;">
+  <!-- Announcements -->
+  <div class="card card--shadow">
+    <div class="card__header">
+      <span class="card__title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"/></svg>
+        Recent Announcements
+      </span>
+      <a href="{% url 'communication:announcements' %}" class="btn btn-ghost btn-sm">View all</a>
+    </div>
+    <div class="card__body" style="padding: 0;">
+      {% for ann in announcements %}
+      <div style="padding: 14px 22px; border-bottom: 1px solid var(--border-color);">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <span class="badge badge-{% if ann.priority == 'URGENT' %}danger{% elif ann.priority == 'HIGH' %}warning{% else %}primary{% endif %}">{{ ann.priority }}</span>
+          <span class="text-muted fs-12">{{ ann.created_at|timesince }} ago</span>
+        </div>
+        <div style="font-weight: 600; font-size: 14px; color: var(--text-primary);">{{ ann.title }}</div>
+        <div style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">{{ ann.body|truncatewords:15 }}</div>
+      </div>
+      {% empty %}
+      <div class="empty-state" style="padding: 40px 24px;">
+        <div class="empty-state__text">No announcements yet.</div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="card card--shadow">
+    <div class="card__header">
+      <span class="card__title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Quick Actions
+      </span>
+    </div> 
+    <div class="card__body">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <a href="{% url 'students:student_create' %}" class="btn btn-outline" style="justify-content: flex-start; gap: 10px; padding: 12px 14px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+          Add Student
+        </a>
+        <a href="{% url 'staff:create' %}" class="btn btn-outline" style="justify-content: flex-start; gap: 10px; padding: 12px 14px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Add Staff
+        </a>
+        <a href="{% url 'admissions:apply' %}" class="btn btn-outline" style="justify-content: flex-start; gap: 10px; padding: 12px 14px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg>
+          New Admission
+        </a>
+        <a href="{% url 'finance:generate-invoices' %}" class="btn btn-outline" style="justify-content: flex-start; gap: 10px; padding: 12px 14px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          Generate Invoices
+        </a>
+        <a href="{% url 'examinations:compute-results' %}" class="btn btn-outline" style="justify-content: flex-start; gap: 10px; padding: 12px 14px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>
+          Compute Results
+        </a>
+        <a href="{% url 'communication:announcement-create' %}" class="btn btn-outline" style="justify-content: flex-start; gap: 10px; padding: 12px 14px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"/><path d="M17.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          Post Announcement
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

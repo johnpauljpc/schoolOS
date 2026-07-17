@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block title %}Student Report{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header__left"><h1 class="page-header__title">Student Report</h1></div>
+<div class="page-header__actions"><a href="{% url 'reports:export-students-excel' %}" class="btn btn-primary">Export Excel</a></div></div>
+<div class="stat-grid" style="margin-bottom:20px">
+<div class="stat-card stat-card--blue"><div class="stat-card__info"><div class="stat-card__label">Total</div><div class="stat-card__value">{{ summary.total }}</div></div></div>
+<div class="stat-card stat-card--green"><div class="stat-card__info"><div class="stat-card__label">Active</div><div class="stat-card__value">{{ summary.active }}</div></div></div>
+<div class="stat-card stat-card--teal"><div class="stat-card__info"><div class="stat-card__label">Graduated</div><div class="stat-card__value">{{ summary.graduated }}</div></div></div>
+<div class="stat-card stat-card--red"><div class="stat-card__info"><div class="stat-card__label">Withdrawn</div><div class="stat-card__value">{{ summary.withdrawn }}</div></div></div>
+</div>
+<div class="card card--shadow"><div class="table-container"><table class="table"><thead><tr><th>Admission No.</th><th>Name</th><th>Class</th><th>Status</th><th>Date Admitted</th></tr></thead><tbody>
+{% for s in students %}<tr><td>{{ s.admission_number }}</td><td><a href="{% url 'students:detail' s.pk %}">{{ s.user.get_full_name }}</a></td><td>{{ s.class_enrolled|default:"—" }}</td>
+<td><span class="badge badge-{% if s.status == 'ACTIVE' %}success{% else %}muted{% endif %}">{{ s.get_status_display }}</span></td><td>{{ s.date_admitted|date:"d M Y"|default:"—" }}</td></tr>
+{% empty %}<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">No students found</td></tr>{% endfor %}
+</tbody></table></div></div>{% endblock %}

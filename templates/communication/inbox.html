@@ -1,0 +1,14 @@
+{% extends 'base.html' %}{% block title %}Inbox{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header__left"><h1 class="page-header__title">Inbox</h1><p class="page-header__subtitle">{{ unread_count }} unread message{{ unread_count|pluralize }}</p></div>
+<div class="page-header__actions"><a href="{% url 'communication:compose' %}" class="btn btn-primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Compose</a>
+<a href="{% url 'communication:sent' %}" class="btn btn-outline">Sent</a></div></div>
+<div class="card card--shadow"><div class="table-container"><table class="table"><thead><tr><th></th><th>From</th><th>Subject</th><th>Date</th></tr></thead><tbody>
+{% for msg in messages_list %}<tr style="cursor:pointer" data-href="{% url 'communication:message-detail' msg.pk %}" class="{% if not msg.is_read %}font-semibold{% endif %}">
+<td><div class="{% if not msg.is_read %}status-dot status-dot--online{% endif %}" style="width:8px;height:8px;border-radius:50%;background:{% if not msg.is_read %}var(--clr-primary-500){% else %}transparent{% endif %}"></div></td>
+<td style="font-weight:{% if not msg.is_read %}700{% else %}400{% endif %}">{{ msg.sender.get_full_name }}</td>
+<td>{{ msg.subject }}</td>
+<td style="color:var(--text-muted);font-size:13px">{{ msg.created_at|timesince }} ago</td>
+</tr>{% empty %}<tr><td colspan="4"><div class="empty-state"><div class="empty-state__title">Inbox is empty</div></div></td></tr>{% endfor %}
+</tbody></table></div></div>{% endblock %}
+{% block extra_js %}<script>document.querySelectorAll('tr[data-href]').forEach(r=>{r.addEventListener('click',()=>window.location.href=r.dataset.href)});</script>{% endblock %}

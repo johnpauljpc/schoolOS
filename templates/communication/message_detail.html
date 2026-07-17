@@ -1,0 +1,17 @@
+{% extends 'base.html' %}{% block title %}{{ message.subject }}{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header__left"><h1 class="page-header__title">{{ message.subject }}</h1></div>
+<div class="page-header__actions"><a href="{% url 'communication:inbox' %}" class="btn btn-ghost">← Back</a></div></div>
+<div class="card card--shadow" style="margin-bottom:16px"><div class="card__body" style="padding:24px">
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border-color)">
+<div class="avatar avatar-sm">{{ message.sender.first_name|first }}{{ message.sender.last_name|first }}</div>
+<div><div style="font-weight:700">{{ message.sender.get_full_name }}</div><div style="font-size:12px;color:var(--text-muted)">To: {{ message.recipient.get_full_name }} · {{ message.created_at|date:"d M Y, H:i" }}</div></div></div>
+<p style="white-space:pre-wrap;color:var(--text-secondary);line-height:1.7">{{ message.body }}</p>
+</div></div>
+{% if replies %}
+<h3 style="font-size:14px;font-weight:600;color:var(--text-muted);margin-bottom:10px">Replies</h3>
+{% for reply in replies %}<div class="card card--shadow" style="margin-bottom:10px;border-left:3px solid var(--clr-primary-500)"><div class="card__body" style="padding:16px 20px"><div style="font-weight:700;margin-bottom:6px">{{ reply.sender.get_full_name }} <span style="font-size:12px;font-weight:400;color:var(--text-muted)">{{ reply.created_at|timesince }} ago</span></div><p style="white-space:pre-wrap;color:var(--text-secondary)">{{ reply.body }}</p></div></div>{% endfor %}{% endif %}
+<div class="card card--shadow"><div class="card__header"><span class="card__title">Reply</span></div><div class="card__body">
+<form method="post" action="{% url 'communication:message-reply' message.pk %}" data-loading>{% csrf_token %}{% load widget_tweaks %}{{ reply_form.body|add_class:"form-control" }}
+<div style="margin-top:10px"><button type="submit" class="btn btn-primary">Send Reply</button></div></form></div></div>
+{% endblock %}

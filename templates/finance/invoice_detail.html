@@ -1,0 +1,26 @@
+{% extends 'base.html' %}{% block title %}Invoice {{ invoice.invoice_number }}{% endblock %}
+{% block breadcrumb %}<a href="{% url 'finance:invoice-list' %}">Invoices</a><span class="topbar__breadcrumb-sep">›</span><span class="topbar__breadcrumb-current">{{ invoice.invoice_number }}</span>{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header__left"><h1 class="page-header__title">Invoice #{{ invoice.invoice_number }}</h1><p class="page-header__subtitle">{{ invoice.student.full_name }} — {{ invoice.session }} / {{ invoice.term }}</p></div>
+<div class="page-header__actions"><span class="badge badge-{% if invoice.status == 'PAID' %}success{% elif invoice.status == 'PARTIAL' %}warning{% else %}danger{% endif %}">{{ invoice.get_status_display }}</span>
+{% if invoice.status != 'PAID' %}<a href="{% url 'finance:online-payment' invoice.pk %}" class="btn btn-primary">Pay Online</a><a href="{% url 'finance:offline-payment-invoice' invoice.pk %}" class="btn btn-outline">Record Payment</a>{% endif %}</div></div>
+<div style="display:grid;grid-template-columns:2fr 1fr;gap:20px">
+<div><div class="card card--shadow" style="margin-bottom:16px">
+<div class="card__header"><span class="card__title">Invoice Items</span></div>
+<div class="table-container"><table class="table"><thead><tr><th>Description</th><th style="text-align:right">Amount</th></tr></thead><tbody>
+{% for item in invoice.items.all %}<tr><td>{{ item.description }}</td><td style="text-align:right">₦{{ item.amount|floatformat:2 }}</td></tr>{% endfor %}
+<tr style="font-weight:700;background:var(--bg-surface2)"><td>TOTAL</td><td style="text-align:right">₦{{ invoice.total_amount|floatformat:2 }}</td></tr>
+</tbody></table></div></div>
+<div class="card card--shadow"><div class="card__header"><span class="card__title">Payments</span></div>
+<div class="table-container"><table class="table"><thead><tr><th>Date</th><th>Method</th><th>Amount</th><th>Status</th><th>Receipt</th></tr></thead><tbody>
+{% for pay in invoice.payments.all %}<tr><td>{{ pay.payment_date|date:"d M Y" }}</td><td>{{ pay.get_payment_method_display }}</td><td>₦{{ pay.amount_paid|floatformat:2 }}</td>
+<td><span class="badge badge-{% if pay.status == 'SUCCESS' %}success{% else %}danger{% endif %}">{{ pay.get_status_display }}</span></td>
+<td>{% if pay.receipt %}<a href="{% url 'finance:receipt-detail' pay.receipt.pk %}" class="btn btn-ghost btn-sm">View</a>{% else %}—{% endif %}</td>
+</tr>{% empty %}<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">No payments yet</td></tr>{% endfor %}
+</tbody></table></div></div></div>
+<div class="card card--shadow" style="height:fit-content"><div class="card__body">
+<div style="font-size:13px"><div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-color)"><span class="text-muted">Total Amount</span><strong>₦{{ invoice.total_amount|floatformat:2 }}</strong></div>
+<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-color)"><span class="text-muted">Amount Paid</span><strong style="color:var(--clr-success)">₦{{ invoice.amount_paid|floatformat:2 }}</strong></div>
+<div style="display:flex;justify-content:space-between;padding:8px 0"><span class="text-muted">Balance</span><strong style="color:var(--clr-danger);font-size:18px">₦{{ invoice.balance|floatformat:2 }}</strong></div></div>
+</div></div></div>
+{% endblock %}

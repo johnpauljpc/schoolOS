@@ -1,0 +1,18 @@
+{% extends 'base.html' %}{% block title %}Staff{% endblock %}
+{% block breadcrumb %}<span class="topbar__breadcrumb-current">Staff</span>{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header__left"><h1 class="page-header__title">Staff Members</h1></div><div class="page-header__actions"><a href="{% url 'staff:create' %}" class="btn btn-primary"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Staff</a></div></div>
+<div class="card card--shadow" style="margin-bottom:20px"><div class="card__body" style="padding:16px 22px">
+<form method="get" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+<div style="flex:1;min-width:200px"><div class="search-bar"><svg class="search-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="text" name="q" class="search-bar__input" placeholder="Search staff…" value="{{ q }}"></div></div>
+<button type="submit" class="btn btn-primary">Search</button><a href="{% url 'staff:list' %}" class="btn btn-ghost">Clear</a>
+</form></div></div>
+<div class="card card--shadow"><div class="table-container"><table class="table"><thead><tr><th>Staff ID</th><th>Name</th><th>Department</th><th>Designation</th><th>Type</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+{% for s in staff %}<tr><td><code style="font-family:var(--font-mono);font-size:12px;color:var(--clr-primary-500)">{{ s.staff_id }}</code></td>
+<td><div style="display:flex;align-items:center;gap:10px"><div class="avatar avatar-sm">{{ s.user.first_name|first }}{{ s.user.last_name|first }}</div><div><div style="font-weight:600">{{ s.user.get_full_name }}</div><div style="font-size:12px;color:var(--text-muted)">{{ s.user.get_role_display }}</div></div></div></td>
+<td>{{ s.department|default:"—" }}</td><td>{{ s.designation|default:"—" }}</td><td>{{ s.get_employment_type_display }}</td>
+<td><span class="badge badge-{% if s.is_active %}success{% else %}danger{% endif %}">{% if s.is_active %}Active{% else %}Inactive{% endif %}</span></td>
+<td><div style="display:flex;gap:6px"><a href="{% url 'staff:detail' s.pk %}" class="btn btn-ghost btn-sm">View</a><a href="{% url 'staff:update' s.pk %}" class="btn btn-ghost btn-sm">Edit</a></div></td></tr>
+{% empty %}<tr><td colspan="7"><div class="empty-state"><div class="empty-state__title">No staff found</div><a href="{% url 'staff:create' %}" class="btn btn-primary" style="margin-top:12px">Add Staff Member</a></div></td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

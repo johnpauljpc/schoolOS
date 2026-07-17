@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}{{ student.full_name }}{% endblock %}
+{% block breadcrumb %}<a href="{% url 'students:list' %}">Students</a> <span class="topbar__breadcrumb-sep">›</span> <span class="topbar__breadcrumb-current">{{ student.full_name }}</span>{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-header__left">
+    <h1 class="page-header__title">{{ student.full_name }}</h1>
+    <p class="page-header__subtitle">Admission No: {{ student.admission_number }}</p>
+  </div>
+  <div class="page-header__actions">
+    <a href="{% url 'students:update' student.pk %}" class="btn btn-outline">Edit Profile</a>
+    <a href="{% url 'examinations:report-card' student.pk %}" class="btn btn-primary">View Report Card</a>
+  </div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr;gap:20px">
+  <div class="card card--shadow">
+    <div class="card__body" style="text-align:center">
+      <div class="avatar avatar-xl" style="margin:0 auto 16px;font-size:32px">{{ student.user.first_name|first }}{{ student.user.last_name|first }}</div>
+      <div style="font-weight:700;font-size:18px">{{ student.full_name }}</div>
+      <div class="text-muted" style="margin-bottom:12px">{{ student.user.email }}</div>
+      <span class="badge badge-{% if student.status == 'ACTIVE' %}success{% else %}danger{% endif %}">{{ student.get_status_display }}</span>
+    </div>
+    <div class="card__footer">
+      <table style="width:100%;font-size:13px">
+        <tr><td class="text-muted">Class</td><td style="text-align:right;font-weight:600">{{ student.class_enrolled|default:"—" }}</td></tr>
+        <tr><td class="text-muted">Nationality</td><td style="text-align:right">{{ student.nationality }}</td></tr>
+        <tr><td class="text-muted">Admitted</td><td style="text-align:right">{{ student.date_admitted|date:"d M Y"|default:"—" }}</td></tr>
+        <tr><td class="text-muted">Phone</td><td style="text-align:right">{{ student.user.phone|default:"—" }}</td></tr>
+      </table>
+    </div>
+  </div>
+  <div>
+    <div class="card card--shadow" style="margin-bottom:16px">
+      <div class="card__header"><span class="card__title">Documents</span><a href="{% url 'students:document-upload' student.pk %}" class="btn btn-primary btn-sm">Upload</a></div>
+      <div class="card__body">
+        {% for doc in student.documents.all %}
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-color)">
+          <span>{{ doc.get_doc_type_display }}: {{ doc.title }}</span>
+          <a href="{{ doc.file.url }}" class="btn btn-ghost btn-sm" target="_blank">Download</a>
+        </div>
+        {% empty %}<p class="text-muted">No documents uploaded.</p>{% endfor %}
+      </div>
+    </div>
+    <div class="card card--shadow">
+      <div class="card__header"><span class="card__title">Medical Info</span><a href="{% url 'students:medical-update' student.pk %}" class="btn btn-ghost btn-sm">Edit</a></div>
+      <div class="card__body">
+        {% if student.medical_info %}
+        <table style="width:100%;font-size:13px">
+          <tr><td class="text-muted">Blood Group</td><td>{{ student.medical_info.blood_group }}</td></tr>
+          <tr><td class="text-muted">Genotype</td><td>{{ student.medical_info.genotype|default:"—" }}</td></tr>
+          <tr><td class="text-muted">Allergies</td><td>{{ student.medical_info.allergies|default:"None" }}</td></tr>
+          <tr><td class="text-muted">Emergency Contact</td><td>{{ student.medical_info.emergency_contact_name }} — {{ student.medical_info.emergency_contact_phone }}</td></tr>
+        </table>
+        {% else %}<p class="text-muted">No medical info recorded.</p>{% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

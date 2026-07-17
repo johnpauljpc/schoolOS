@@ -1,0 +1,20 @@
+{% extends 'base.html' %}{% block title %}Finance Report{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header__left"><h1 class="page-header__title">Finance Report</h1></div>
+<div class="page-header__actions"><a href="{% url 'reports:export-finance-excel' %}" class="btn btn-primary">Export Excel</a></div></div>
+<div class="stat-grid" style="margin-bottom:20px">
+<div class="stat-card stat-card--teal"><div class="stat-card__info"><div class="stat-card__label">Total Invoiced</div><div class="stat-card__value">₦{{ total_invoiced|floatformat:0 }}</div></div></div>
+<div class="stat-card stat-card--green"><div class="stat-card__info"><div class="stat-card__label">Total Collected</div><div class="stat-card__value">₦{{ total_paid|floatformat:0 }}</div></div></div>
+<div class="stat-card stat-card--blue"><div class="stat-card__info"><div class="stat-card__label">This Month</div><div class="stat-card__value">₦{{ monthly|floatformat:0 }}</div></div></div>
+<div class="stat-card stat-card--red"><div class="stat-card__info"><div class="stat-card__label">Unpaid Invoices</div><div class="stat-card__value">{{ unpaid }}</div></div></div>
+</div>
+<div class="card card--shadow"><div class="card__header"><span class="card__title">Recent Payments</span></div>
+<div class="table-container"><table class="table"><thead><tr><th>Date</th><th>Student</th><th>Amount</th><th>Method</th><th>Status</th></tr></thead><tbody>
+{% for p in recent_payments %}<tr>
+<td>{{ p.payment_date|date:"d M Y" }}</td>
+<td><a href="{% url 'students:detail' p.invoice.student.pk %}">{{ p.invoice.student.full_name }}</a></td>
+<td style="font-weight:600">₦{{ p.amount_paid|floatformat:2 }}</td>
+<td>{{ p.get_payment_method_display }}</td>
+<td><span class="badge badge-{% if p.status == 'SUCCESS' %}success{% else %}danger{% endif %}">{{ p.get_status_display }}</span></td>
+</tr>{% empty %}<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">No payments</td></tr>{% endfor %}
+</tbody></table></div></div>{% endblock %}

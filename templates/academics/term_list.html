@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}Academic Terms{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>📆 Academic Terms</h1>
+    <p class="breadcrumb">Academics › Terms</p>
+  </div>
+  {% if request.user.role in "SUPER_ADMIN ICT_ADMIN PRINCIPAL VICE_PRINCIPAL" or request.user.is_superuser %}
+  <a href="{% url 'academics:term_create' %}" class="btn btn-primary">+ New Term</a>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Term</th>
+          <th>Session</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th>Next Term Begins</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for term in terms %}
+        <tr>
+          <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+          <td><strong>{{ term.get_name_display }}</strong></td>
+          <td>{{ term.session.name }}</td>
+          <td>{{ term.start_date|date:"d M Y" }}</td>
+          <td>{{ term.end_date|date:"d M Y" }}</td>
+          <td>{{ term.next_term_begins|date:"d M Y"|default:"—" }}</td>
+          <td>
+            {% if term.is_current %}
+              <span class="badge badge-green">Current</span>
+            {% else %}
+              <span class="badge badge-gray">Inactive</span>
+            {% endif %}
+          </td>
+          <td style="display:flex;gap:.4rem;flex-wrap:wrap;">
+            {% if not term.is_current %}
+            <form method="post" action="{% url 'academics:term_set_current' term.pk %}" style="margin:0;">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-sm btn-success">Set Current</button>
+            </form>
+            {% endif %}
+            <a href="{% url 'academics:term_update' term.pk %}" class="btn btn-sm btn-outline">Edit</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8">
+            <div class="empty-state">
+              <h3>No terms found.</h3>
+              <a href="{% url 'academics:term_create' %}" class="btn btn-primary" style="margin-top:.75rem;">Create First Term</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% if page_obj.has_other_pages %}
+<div class="pagination">
+  {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}">‹ Prev</a>{% endif %}
+  {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}<span class="current">{{ num }}</span>
+    {% else %}<a href="?page={{ num }}">{{ num }}</a>{% endif %}
+  {% endfor %}
+  {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}">Next ›</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}{% block title %}Manage Announcements{% endblock %}
+{% block content %}
+<div class="page-header"><h1 class="page-header__title">Manage Announcements</h1><div class="page-header__actions"><a href="{% url 'communication:announcement-create' %}" class="btn btn-primary">New</a></div></div>
+<div class="card card--shadow"><div class="table-container"><table class="table"><thead><tr><th>Title</th><th>Priority</th><th>Author</th><th>Published</th><th>Created</th><th>Actions</th></tr></thead><tbody>
+{% for ann in announcements %}<tr>
+<td style="font-weight:600">{{ ann.title }}</td>
+<td><span class="badge badge-{% if ann.priority == 'URGENT' %}danger{% elif ann.priority == 'HIGH' %}warning{% else %}primary{% endif %}">{{ ann.priority }}</span></td>
+<td>{{ ann.author.get_full_name }}</td>
+<td><span class="badge badge-{% if ann.is_published %}success{% else %}muted{% endif %}">{% if ann.is_published %}Published{% else %}Draft{% endif %}</span></td>
+<td>{{ ann.created_at|date:"d M Y" }}</td>
+<td><div style="display:flex;gap:6px">
+<a href="{% url 'communication:announcement-update' ann.pk %}" class="btn btn-ghost btn-sm">Edit</a>
+<a href="{% url 'communication:announcement-publish' ann.pk %}" class="btn btn-ghost btn-sm" data-confirm="Toggle publish status?">{% if ann.is_published %}Unpublish{% else %}Publish{% endif %}</a>
+<a href="{% url 'communication:announcement-delete' ann.pk %}" class="btn btn-ghost btn-sm" style="color:var(--clr-danger)" data-confirm="Delete this announcement?">Delete</a>
+</div></td></tr>{% empty %}<tr><td colspan="6"><div class="empty-state"><div class="empty-state__title">No announcements.</div></div></td></tr>{% endfor %}
+</tbody></table></div></div>{% endblock %}

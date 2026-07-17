@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Class Levels{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>🏫 Class Levels</h1>
+    <p class="breadcrumb">Academics › Class Levels</p>
+  </div>
+  {% if request.user.role in "SUPER_ADMIN ICT_ADMIN PRINCIPAL VICE_PRINCIPAL" or request.user.is_superuser %}
+  <a href="{% url 'academics:class_level_create' %}" class="btn btn-primary">+ New Class Level</a>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>Order</th>
+          <th>Level</th>
+          <th>Section</th>
+          <th>Arms</th>
+          <th>Subjects</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for level in levels %}
+        <tr>
+          <td>{{ level.order }}</td>
+          <td><strong>{{ level.name }}</strong></td>
+          <td>
+            {% if level.section == 'JUNIOR' %}
+              <span class="badge badge-blue">Junior</span>
+            {% else %}
+              <span class="badge badge-yellow">Senior</span>
+            {% endif %}
+          </td>
+          <td>{{ level.arms.count }}</td>
+          <td>{{ level.subjects.count }}</td>
+          <td>
+            <a href="{% url 'academics:class_level_update' level.pk %}" class="btn btn-sm btn-outline">Edit</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6">
+            <div class="empty-state">
+              <h3>No class levels defined yet.</h3>
+              <a href="{% url 'academics:class_level_create' %}" class="btn btn-primary" style="margin-top:.75rem;">Create First Level</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

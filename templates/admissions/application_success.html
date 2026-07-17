@@ -1,0 +1,9 @@
+{% load static %}<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>Application Submitted</title><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="{% static 'css/style.css' %}"></head>
+<body style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg-body);padding:24px">
+<div class="card card--shadow" style="max-width:520px;width:100%;text-align:center"><div class="card__body" style="padding:48px 40px">
+<div style="width:72px;height:72px;border-radius:50%;background:var(--clr-success-bg);display:flex;align-items:center;justify-content:center;margin:0 auto 24px"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--clr-success)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></div>
+<h1 style="font-size:24px;font-weight:800;color:var(--text-primary);margin-bottom:8px">Application Submitted!</h1>
+<p style="color:var(--text-muted);margin-bottom:24px">Your application has been received. Please save your application number below for tracking.</p>
+<div style="background:var(--bg-muted);border-radius:12px;padding:20px;margin-bottom:24px"><div style="font-size:12px;color:var(--text-muted);margin-bottom:4px">Application Number</div><div style="font-size:28px;font-weight:800;font-family:var(--font-mono);color:var(--clr-primary-500)">{{ application_number }}</div></div>
+<p style="font-size:13px;color:var(--text-muted)">You will be contacted via email or phone when your application has been reviewed.</p>
+</div></div></body></html>

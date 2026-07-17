@@ -1,0 +1,8 @@
+{% extends 'base.html' %}{% load widget_tweaks %}{% block title %}Generate Invoices{% endblock %}
+{% block content %}
+<div class="page-header"><h1 class="page-header__title">Generate Invoices</h1><p class="page-header__subtitle">Bulk generate fee invoices for a session/term</p></div>
+<div class="card card--shadow" style="max-width:600px"><div class="card__body">
+<form method="post" data-loading>{% csrf_token %}
+{% for field in form %}<div class="form-group"><label class="form-label {% if field.field.required %}required{% endif %}">{{ field.label }}</label>{{ field|add_class:"form-control" }}{% if field.errors %}<div class="form-error">{{ field.errors|join:', ' }}</div>{% endif %}{% if field.help_text %}<div class="form-hint">{{ field.help_text }}</div>{% endif %}</div>{% endfor %}
+<button type="submit" class="btn btn-primary" data-confirm="This will generate invoices for all selected students. Continue?">Generate Invoices</button>
+</form></div></div>{% endblock %}

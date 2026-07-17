@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>{{ title }}</h1>
+    <p class="breadcrumb">Academics › <a href="{% url 'academics:subject_list' %}">Subjects</a> › {{ action }}</p>
+  </div>
+</div>
+
+<div class="card" style="max-width:640px;">
+  <div class="card-header">{{ title }}</div>
+  <div class="card-body">
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-error">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="{{ form.name.id_for_label }}">{{ form.name.label }} *</label>
+          {{ form.name }}
+          {% if form.name.errors %}<p class="form-error">{{ form.name.errors|striptags }}</p>{% endif %}
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="{{ form.code.id_for_label }}">{{ form.code.label }} *</label>
+          {{ form.code }}
+          {% if form.code.errors %}<p class="form-error">{{ form.code.errors|striptags }}</p>{% endif %}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.department.id_for_label }}">{{ form.department.label }}</label>
+        {{ form.department }}
+        {% if form.department.errors %}<p class="form-error">{{ form.department.errors|striptags }}</p>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.class_levels.id_for_label }}">{{ form.class_levels.label }}</label>
+        {{ form.class_levels }}
+        <p class="form-help">Hold Ctrl (⌘ on Mac) to select multiple class levels.</p>
+        {% if form.class_levels.errors %}<p class="form-error">{{ form.class_levels.errors|striptags }}</p>{% endif %}
+      </div>
+
+      <div class="form-group">
+        <div class="form-check">
+          {{ form.is_compulsory }}
+          <label class="form-label" for="{{ form.is_compulsory.id_for_label }}" style="margin-bottom:0;">{{ form.is_compulsory.label }}</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+        {{ form.description }}
+      </div>
+
+      <div style="display:flex;gap:.75rem;margin-top:1.5rem;">
+        <button type="submit" class="btn btn-primary">{{ action }} Subject</button>
+        <a href="{% url 'academics:subject_list' %}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

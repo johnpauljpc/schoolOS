@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Departments{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>🏢 Departments</h1>
+    <p class="breadcrumb">Academics › Departments</p>
+  </div>
+  {% if request.user.role in "SUPER_ADMIN ICT_ADMIN PRINCIPAL VICE_PRINCIPAL" or request.user.is_superuser %}
+  <a href="{% url 'academics:department_create' %}" class="btn btn-primary">+ New Department</a>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Department</th>
+          <th>Head</th>
+          <th>Description</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for dept in departments %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td><strong>{{ dept.name }}</strong></td>
+          <td>{{ dept.head.get_full_name|default:"—" }}</td>
+          <td>{{ dept.description|truncatechars:60|default:"—" }}</td>
+          <td>{{ dept.created_at|date:"d M Y" }}</td>
+          <td>
+            <a href="{% url 'academics:department_update' dept.pk %}" class="btn btn-sm btn-outline">Edit</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6">
+            <div class="empty-state">
+              <h3>No departments yet.</h3>
+              <a href="{% url 'academics:department_create' %}" class="btn btn-primary" style="margin-top:.75rem;">Create First Department</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

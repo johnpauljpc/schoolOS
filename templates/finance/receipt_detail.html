@@ -1,0 +1,15 @@
+{% extends 'base.html' %}{% block title %}Receipt {{ receipt.receipt_number }}{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header__left"><h1 class="page-header__title">Receipt #{{ receipt.receipt_number }}</h1></div>
+<div class="page-header__actions"><a href="{% url 'finance:receipt-pdf' receipt.pk %}" class="btn btn-primary" target="_blank">Download PDF</a></div></div>
+<div class="card card--shadow" style="max-width:600px"><div class="card__body">
+<table style="width:100%;font-size:14px"><tr><td class="text-muted">Receipt No.</td><td style="font-weight:700">{{ receipt.receipt_number }}</td></tr>
+<tr><td class="text-muted">Date</td><td>{{ receipt.generated_at|date:"d M Y, H:i" }}</td></tr>
+<tr><td class="text-muted">Student</td><td>{{ receipt.payment.invoice.student.full_name }}</td></tr>
+<tr><td class="text-muted">Invoice</td><td>{{ receipt.payment.invoice.invoice_number }}</td></tr>
+<tr><td class="text-muted">Amount Paid</td><td style="font-weight:700;font-size:18px;color:var(--clr-success)">₦{{ receipt.payment.amount_paid|floatformat:2 }}</td></tr>
+<tr><td class="text-muted">Payment Method</td><td>{{ receipt.payment.get_payment_method_display }}</td></tr>
+<tr><td class="text-muted">Status</td><td><span class="badge badge-success">{{ receipt.payment.get_status_display }}</span></td></tr>
+</table>
+</div></div>
+{% endblock %}

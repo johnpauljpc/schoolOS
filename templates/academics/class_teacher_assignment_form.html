@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>{{ title }}</h1>
+    <p class="breadcrumb">Academics › <a href="{% url 'academics:class_teacher_assignment_list' %}">Class Teacher Assignments</a> › {{ action }}</p>
+  </div>
+</div>
+
+<div class="card" style="max-width:480px;">
+  <div class="card-header">{{ title }}</div>
+  <div class="card-body">
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-error">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      {% for field in form %}
+      <div class="form-group">
+        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+        {{ field }}
+        {% if field.errors %}<p class="form-error">{{ field.errors|striptags }}</p>{% endif %}
+      </div>
+      {% endfor %}
+
+      <p class="form-help" style="margin-bottom:1rem;">
+        ℹ Each class arm can have only one class teacher per session.
+      </p>
+
+      <div style="display:flex;gap:.75rem;margin-top:1.5rem;">
+        <button type="submit" class="btn btn-primary">{{ action }} Assignment</button>
+        <a href="{% url 'academics:class_teacher_assignment_list' %}" class="btn btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}{% load widget_tweaks %}{% block title %}My Profile{% endblock %}
+{% block content %}
+<div class="page-header"><h1 class="page-header__title">My Profile</h1><div class="page-header__actions"><a href="{% url 'accounts:profile-update' %}" class="btn btn-outline">Edit Profile</a><a href="{% url 'accounts:change-password' %}" class="btn btn-outline">Change Password</a></div></div>
+<div style="display:grid;grid-template-columns:1fr 2fr;gap:20px">
+<div class="card card--shadow"><div class="card__body" style="text-align:center">
+{% if request.user.avatar %}<img src="{{ request.user.avatar.url }}" class="avatar avatar-xl" style="margin:0 auto 16px" alt="Avatar">
+{% else %}<div class="avatar avatar-xl" style="margin:0 auto 16px;font-size:32px">{{ request.user.first_name|first }}{{ request.user.last_name|first }}</div>{% endif %}
+<div style="font-weight:700;font-size:18px">{{ request.user.get_full_name }}</div>
+<div class="text-muted" style="margin-bottom:10px">{{ request.user.get_role_display }}</div>
+<span class="badge badge-{% if request.user.is_email_verified %}success{% else %}warning{% endif %}">{% if request.user.is_email_verified %}Email Verified{% else %}Unverified{% endif %}</span>
+</div></div>
+<div class="card card--shadow"><div class="card__header"><span class="card__title">Account Details</span></div><div class="card__body"><table style="width:100%;font-size:14px">
+<tr><td class="text-muted" style="width:140px">Username</td><td style="font-weight:600">{{ request.user.username }}</td></tr>
+<tr><td class="text-muted">Email</td><td>{{ request.user.email|default:"—" }}</td></tr>
+<tr><td class="text-muted">Phone</td><td>{{ request.user.phone|default:"—" }}</td></tr>
+<tr><td class="text-muted">Gender</td><td>{{ request.user.get_gender_display|default:"—" }}</td></tr>
+<tr><td class="text-muted">Date of Birth</td><td>{{ request.user.date_of_birth|date:"d M Y"|default:"—" }}</td></tr>
+<tr><td class="text-muted">Address</td><td>{{ request.user.address|default:"—" }}</td></tr>
+<tr><td class="text-muted">Member Since</td><td>{{ request.user.date_joined|date:"d M Y" }}</td></tr>
+</table></div></div></div>{% endblock %}

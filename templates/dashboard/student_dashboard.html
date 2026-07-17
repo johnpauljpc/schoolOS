@@ -1,0 +1,4 @@
+{% extends 'base.html' %}{% block title %}Dashboard{% endblock %}{% block content %}
+<div class="page-header"><div class="page-header__left"><h1 class="page-header__title">Welcome, {{ user.first_name }}</h1><p class="page-header__subtitle">{{ today|date:"l, j F Y" }} — {{ SCHOOL_NAME }}</p></div></div>
+{% if announcements %}<div class="card card--shadow"><div class="card__header"><span class="card__title">Announcements</span></div><div class="card__body" style="padding:0">{% for ann in announcements %}<div style="padding:14px 22px;border-bottom:1px solid var(--border-color)"><span class="badge badge-primary" style="margin-right:8px">{{ ann.priority }}</span><strong>{{ ann.title }}</strong><div style="font-size:13px;color:var(--text-muted);margin-top:4px">{{ ann.body|truncatewords:20 }}</div></div>{% endfor %}</div></div>{% endif %}
+{% endblock %}

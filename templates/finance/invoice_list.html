@@ -1,0 +1,18 @@
+{% extends 'base.html' %}{% block title %}Invoices{% endblock %}
+{% block breadcrumb %}<span class="topbar__breadcrumb-current">Invoices</span>{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header__left"><h1 class="page-header__title">Invoices</h1></div>
+<div class="page-header__actions"><a href="{% url 'finance:generate-invoices' %}" class="btn btn-primary">Generate Invoices</a><a href="{% url 'finance:offline-payment' %}" class="btn btn-outline">Record Payment</a></div></div>
+<div class="card card--shadow"><div class="table-container"><table class="table"><thead><tr><th>Invoice No.</th><th>Student</th><th>Session/Term</th><th>Total</th><th>Paid</th><th>Balance</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+{% for inv in invoices %}<tr>
+<td><code style="font-family:var(--font-mono);font-size:12px;color:var(--clr-primary-500)">{{ inv.invoice_number }}</code></td>
+<td><a href="{% url 'students:detail' inv.student.pk %}" style="font-weight:600">{{ inv.student.full_name }}</a></td>
+<td>{{ inv.session }} / {{ inv.term }}</td>
+<td>₦{{ inv.total_amount|floatformat:2 }}</td>
+<td>₦{{ inv.amount_paid|floatformat:2 }}</td>
+<td style="font-weight:600;color:{% if inv.balance > 0 %}var(--clr-danger){% else %}var(--clr-success){% endif %}">₦{{ inv.balance|floatformat:2 }}</td>
+<td><span class="badge badge-{% if inv.status == 'PAID' %}success{% elif inv.status == 'PARTIAL' %}warning{% else %}danger{% endif %}">{{ inv.get_status_display }}</span></td>
+<td><div style="display:flex;gap:6px"><a href="{% url 'finance:invoice-detail' inv.pk %}" class="btn btn-ghost btn-sm">View</a></div></td>
+</tr>{% empty %}<tr><td colspan="8"><div class="empty-state"><div class="empty-state__title">No invoices found</div></div></td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

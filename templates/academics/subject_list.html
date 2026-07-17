@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Subjects{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>📚 Subjects</h1>
+    <p class="breadcrumb">Academics › Subjects</p>
+  </div>
+  {% if request.user.role in "SUPER_ADMIN ICT_ADMIN PRINCIPAL VICE_PRINCIPAL" or request.user.is_superuser %}
+  <a href="{% url 'academics:subject_create' %}" class="btn btn-primary">+ New Subject</a>
+  {% endif %}
+</div>
+
+<!-- Search -->
+<form method="get" style="margin-bottom:1rem;display:flex;gap:.5rem;max-width:400px;">
+  <input type="text" name="q" value="{{ q }}" placeholder="Search by name or code…" class="form-control">
+  <button type="submit" class="btn btn-outline">Search</button>
+  {% if q %}<a href="{% url 'academics:subject_list' %}" class="btn btn-secondary">Clear</a>{% endif %}
+</form>
+
+<div class="card">
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Subject</th>
+          <th>Code</th>
+          <th>Department</th>
+          <th>Class Levels</th>
+          <th>Compulsory</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for subject in subjects %}
+        <tr>
+          <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+          <td><strong>{{ subject.name }}</strong></td>
+          <td><code>{{ subject.code }}</code></td>
+          <td>{{ subject.department.name|default:"—" }}</td>
+          <td>
+            {% for level in subject.class_levels.all %}
+              <span class="badge badge-blue">{{ level.name }}</span>
+            {% empty %}
+              <span style="color:var(--clr-muted)">—</span>
+            {% endfor %}
+          </td>
+          <td>
+            {% if subject.is_compulsory %}
+              <span class="badge badge-green">Yes</span>
+            {% else %}
+              <span class="badge badge-gray">No</span>
+            {% endif %}
+          </td>
+          <td style="display:flex;gap:.4rem;flex-wrap:wrap;">
+            <a href="{% url 'academics:subject_update' subject.pk %}" class="btn btn-sm btn-outline">Edit</a>
+            <a href="{% url 'academics:subject_delete' subject.pk %}" class="btn btn-sm btn-danger">Delete</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7">
+            <div class="empty-state">
+              <h3>No subjects found.</h3>
+              {% if q %}<p>Try clearing the search or <a href="{% url 'academics:subject_create' %}">create a new subject</a>.</p>
+              {% else %}<a href="{% url 'academics:subject_create' %}" class="btn btn-primary" style="margin-top:.75rem;">Create First Subject</a>{% endif %}
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% if page_obj.has_other_pages %}
+<div class="pagination">
+  {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}{% if q %}&q={{ q }}{% endif %}">‹ Prev</a>{% endif %}
+  {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}<span class="current">{{ num }}</span>
+    {% else %}<a href="?page={{ num }}{% if q %}&q={{ q }}{% endif %}">{{ num }}</a>{% endif %}
+  {% endfor %}
+  {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}{% if q %}&q={{ q }}{% endif %}">Next ›</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}{% load widget_tweaks %}{% block title %}CA Entry{% endblock %}
+{% block content %}
+<div class="page-header"><h1 class="page-header__title">Continuous Assessment Entry</h1><p class="page-header__subtitle">Select class, subject, and term to begin.</p></div>
+<div class="card card--shadow" style="max-width:600px"><div class="card__body">
+<form method="get" action="" data-loading>
+<div class="form-group"><label class="form-label required">Academic Session</label>
+<select name="session" class="form-control">{% for s in sessions %}<option value="{{ s.pk }}" {% if s.is_current %}selected{% endif %}>{{ s.name }}</option>{% endfor %}</select></div>
+<div class="form-group"><label class="form-label required">Term</label>
+<select name="term" class="form-control">{% for t in terms %}<option value="{{ t.pk }}" {% if t.is_current %}selected{% endif %}>{{ t.get_name_display }}</option>{% endfor %}</select></div>
+<div class="form-group"><label class="form-label required">Class</label>
+<select name="class_arm" class="form-control">{% for ca in class_arms %}<option value="{{ ca.pk }}">{{ ca }}</option>{% endfor %}</select></div>
+<div class="form-group"><label class="form-label required">Subject</label>
+<select name="subject" class="form-control">{% for s in subjects %}<option value="{{ s.pk }}">{{ s.name }} ({{ s.code }})</option>{% endfor %}</select></div>
+<button type="submit" class="btn btn-primary">Load Students</button>
+</form></div></div>
+{% if formset %}
+<div class="card card--shadow" style="margin-top:20px"><div class="card__header"><span class="card__title">Enter CA Scores</span><button type="submit" form="caForm" class="btn btn-primary btn-sm">Save All</button></div>
+<form method="post" id="caForm" data-loading>{% csrf_token %}{{ formset.management_form }}
+<div class="table-container"><table class="table"><thead><tr><th>Student</th><th>CA1</th><th>CA2</th><th>CA3</th></tr></thead><tbody>
+{% for form in formset %}<tr>{{ form.id }}<td>{{ form.instance.student.full_name }}</td><td>{{ form.ca1_score|add_class:"form-control form-control--sm" }}</td><td>{{ form.ca2_score|add_class:"form-control form-control--sm" }}</td><td>{{ form.ca3_score|add_class:"form-control form-control--sm" }}</td></tr>{% endfor %}
+</tbody></table></div></form></div>{% endif %}
+{% endblock %}

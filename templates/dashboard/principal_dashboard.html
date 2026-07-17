@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block breadcrumb %}<span class="topbar__breadcrumb-current">Dashboard</span>{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-header__left">
+    <h1 class="page-header__title">Principal's Dashboard</h1>
+    <p class="page-header__subtitle">{{ today|date:"l, j F Y" }} — {{ SCHOOL_NAME }}</p>
+  </div>
+</div>
+<div class="stat-grid">
+  <div class="stat-card stat-card--blue"><div class="stat-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div><div class="stat-card__info"><div class="stat-card__label">Students</div><div class="stat-card__value">{{ total_students }}</div></div></div>
+  <div class="stat-card stat-card--green"><div class="stat-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><div class="stat-card__info"><div class="stat-card__label">Staff</div><div class="stat-card__value">{{ total_staff }}</div></div></div>
+  <div class="stat-card stat-card--orange"><div class="stat-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/></svg></div><div class="stat-card__info"><div class="stat-card__label">Pending Admissions</div><div class="stat-card__value">{{ pending_admissions }}</div></div></div>
+  <div class="stat-card stat-card--red"><div class="stat-card__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg></div><div class="stat-card__info"><div class="stat-card__label">Pending Results Approval</div><div class="stat-card__value">{{ pending_results }}</div></div></div>
+</div>
+<div class="card card--shadow" style="margin-top: 8px;"><div class="card__header"><span class="card__title">Recent Announcements</span><a href="{% url 'communication:announcement-create' %}" class="btn btn-primary btn-sm">Post Announcement</a></div><div class="card__body" style="padding: 0;">{% for ann in announcements %}<div style="padding: 14px 22px; border-bottom: 1px solid var(--border-color);"><span class="badge badge-primary" style="margin-right: 8px;">{{ ann.priority }}</span><strong>{{ ann.title }}</strong><span class="text-muted fs-12" style="margin-left: 8px;">{{ ann.created_at|timesince }} ago</span></div>{% empty %}<div class="empty-state"><div class="empty-state__text">No announcements.</div></div>{% endfor %}</div></div>
+{% endblock %}

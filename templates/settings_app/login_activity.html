@@ -1,0 +1,10 @@
+{% extends 'base.html' %}{% block title %}Login Activity{% endblock %}
+{% block content %}
+<div class="page-header"><h1 class="page-header__title">Login Activity</h1></div>
+<div class="card card--shadow"><div class="table-container"><table class="table"><thead><tr><th>Timestamp</th><th>User</th><th>Action</th><th>IP Address</th><th>User Agent</th></tr></thead><tbody>
+{% for a in activities %}<tr><td style="font-size:12px;color:var(--text-muted)">{{ a.timestamp|date:"d M Y H:i:s" }}</td>
+<td>{{ a.user }}</td><td><span class="badge badge-{% if a.action == 'LOGIN' %}success{% else %}muted{% endif %}">{{ a.action }}</span></td>
+<td style="font-family:var(--font-mono);font-size:12px">{{ a.ip_address|default:"—" }}</td>
+<td style="font-size:12px;color:var(--text-muted);max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ a.user_agent|default:"—" }}</td></tr>
+{% empty %}<tr><td colspan="5" style="text-align:center;color:var(--text-muted)">No login activity yet</td></tr>{% endfor %}
+</tbody></table></div></div>{% endblock %}

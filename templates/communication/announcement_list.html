@@ -1,0 +1,14 @@
+{% extends 'base.html' %}{% block title %}Announcements{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header__left"><h1 class="page-header__title">Announcements</h1></div>
+{% if request.user.role in 'SUPER_ADMIN,ICT_ADMIN,PRINCIPAL,VICE_PRINCIPAL'|split:',' %}<div class="page-header__actions"><a href="{% url 'communication:announcement-create' %}" class="btn btn-primary">New Announcement</a><a href="{% url 'communication:manage' %}" class="btn btn-outline">Manage</a></div>{% endif %}</div>
+{% for ann in announcements %}<div class="card card--shadow" style="margin-bottom:14px">
+<div class="card__body" style="padding:20px 24px">
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+<span class="badge badge-{% if ann.priority == 'URGENT' %}danger{% elif ann.priority == 'HIGH' %}warning{% else %}primary{% endif %}">{{ ann.priority }}</span>
+<span class="text-muted" style="font-size:12px">Posted {{ ann.created_at|timesince }} ago by {{ ann.author.get_full_name }}</span></div>
+<h2 style="font-size:17px;font-weight:700;color:var(--text-primary);margin-bottom:8px">{{ ann.title }}</h2>
+<p style="color:var(--text-secondary);font-size:14px;white-space:pre-wrap">{{ ann.body }}</p>
+</div></div>
+{% empty %}<div class="empty-state" style="margin-top:40px"><div class="empty-state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5"/></svg></div><div class="empty-state__title">No announcements yet</div></div>{% endfor %}
+{% endblock %}

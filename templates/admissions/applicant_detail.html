@@ -1,0 +1,27 @@
+{% extends 'base.html' %}{% block title %}{{ applicant.full_name }}{% endblock %}
+{% block breadcrumb %}<a href="{% url 'admissions:applicant-list' %}">Admissions</a><span class="topbar__breadcrumb-sep">›</span><span class="topbar__breadcrumb-current">{{ applicant.full_name }}</span>{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header__left"><h1 class="page-header__title">{{ applicant.full_name }}</h1><p class="page-header__subtitle">{{ applicant.application_number }}</p></div>
+<div class="page-header__actions">
+<span class="badge badge-{% if applicant.status == 'ADMITTED' %}success{% elif applicant.status == 'PENDING' %}warning{% elif applicant.status == 'REJECTED' %}danger{% else %}primary{% endif %}">{{ applicant.get_status_display }}</span>
+{% if applicant.status == 'ADMITTED' %}<a href="{% url 'admissions:admit-applicant' applicant.pk %}" class="btn btn-accent">Enroll Student</a><a href="{% url 'admissions:admission-letter-pdf' applicant.pk %}" class="btn btn-outline" target="_blank">Download Letter</a>{% endif %}
+{% if applicant.status == 'PENDING' or applicant.status == 'SCREENED' %}<a href="{% url 'admissions:applicant-review' applicant.pk %}" class="btn btn-primary">Review</a>{% endif %}
+</div></div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+<div class="card card--shadow"><div class="card__header"><span class="card__title">Personal Details</span></div><div class="card__body"><table style="width:100%;font-size:14px">
+<tr><td class="text-muted">Full Name</td><td style="font-weight:600">{{ applicant.full_name }}</td></tr>
+<tr><td class="text-muted">Date of Birth</td><td>{{ applicant.date_of_birth|date:"d M Y" }}</td></tr>
+<tr><td class="text-muted">Gender</td><td>{{ applicant.get_gender_display }}</td></tr>
+<tr><td class="text-muted">Nationality</td><td>{{ applicant.nationality }}</td></tr>
+<tr><td class="text-muted">State of Origin</td><td>{{ applicant.state_of_origin|default:"—" }}</td></tr>
+<tr><td class="text-muted">Previous School</td><td>{{ applicant.previous_school|default:"—" }}</td></tr>
+<tr><td class="text-muted">Applying For</td><td>{{ applicant.applying_for_class }}</td></tr>
+</table></div></div>
+<div class="card card--shadow"><div class="card__header"><span class="card__title">Guardian Information</span></div><div class="card__body"><table style="width:100%;font-size:14px">
+<tr><td class="text-muted">Name</td><td style="font-weight:600">{{ applicant.guardian_name }}</td></tr>
+<tr><td class="text-muted">Relationship</td><td>{{ applicant.guardian_relationship }}</td></tr>
+<tr><td class="text-muted">Phone</td><td>{{ applicant.guardian_phone }}</td></tr>
+<tr><td class="text-muted">Email</td><td>{{ applicant.guardian_email|default:"—" }}</td></tr>
+</table></div></div>
+{% if applicant.review_notes %}<div class="card card--shadow" style="grid-column:1/-1"><div class="card__header"><span class="card__title">Review Notes</span></div><div class="card__body"><p>{{ applicant.review_notes }}</p></div></div>{% endif %}
+</div>{% endblock %}

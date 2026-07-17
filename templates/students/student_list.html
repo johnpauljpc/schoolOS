@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block title %}Students{% endblock %}
+{% block breadcrumb %}<a href="{% url 'students:list' %}">Students</a>{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="page-header__left">
+    <h1 class="page-header__title">Students</h1>
+    <p class="page-header__subtitle">Manage all enrolled students</p>
+  </div>
+  <div class="page-header__actions">
+    <a href="{% url 'students:create' %}" class="btn btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Student
+    </a>
+    <a href="{% url 'reports:export-students-excel' %}" class="btn btn-outline">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export Excel
+    </a>
+  </div>
+</div>
+
+<!-- Search / Filter -->
+<div class="card card--shadow" style="margin-bottom: 20px;">
+  <div class="card__body" style="padding: 16px 22px;">
+    <form method="get" style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end;">
+      <div style="flex: 1; min-width: 200px;">
+        <div class="search-bar">
+          <svg class="search-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <input type="text" name="q" class="search-bar__input" placeholder="Search by name, admission number…" value="{{ q }}">
+        </div>
+      </div>
+      <div style="min-width: 150px;">
+        <select name="status" class="form-control">
+          <option value="">All Statuses</option>
+          {% for val, label in statuses %}<option value="{{ val }}" {% if val == selected_status %}selected{% endif %}>{{ label }}</option>{% endfor %}
+        </select>
+      </div>
+      <div style="min-width: 150px;">
+        <select name="class_enrolled" class="form-control">
+          <option value="">All Classes</option>
+          {% for arm in class_arms %}<option value="{{ arm.pk }}" {% if arm.pk|stringformat:'s' == selected_class %}selected{% endif %}>{{ arm }}</option>{% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Filter</button>
+      <a href="{% url 'students:list' %}" class="btn btn-ghost">Clear</a>
+    </form>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="card card--shadow">
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Admission No.</th>
+          <th>Name</th>
+          <th>Class</th>
+          <th>Gender</th>
+          <th>Status</th>
+          <th>Date Admitted</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for student in students %}
+        <tr>
+          <td><code style="font-family: var(--font-mono); font-size: 12px; color: var(--clr-primary-500);">{{ student.admission_number }}</code></td>
+          <td>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <div class="avatar avatar-sm" style="background: hsl({{ student.pk }}0, 60%, 50%)">{{ student.user.first_name|first }}{{ student.user.last_name|first }}</div>
+              <div>
+                <div style="font-weight: 600;">{{ student.user.get_full_name }}</div>
+                <div style="font-size: 12px; color: var(--text-muted);">{{ student.user.email }}</div>
+              </div>
+            </div>
+          </td>
+          <td>{{ student.class_enrolled|default:"—" }}</td>
+          <td>{{ student.user.get_gender_display|default:"—" }}</td>
+          <td>
+            <span class="badge badge-{% if student.status == 'ACTIVE' %}success{% elif student.status == 'GRADUATED' %}primary{% elif student.status == 'WITHDRAWN' or student.status == 'SUSPENDED' %}danger{% else %}muted{% endif %}">
+              {{ student.get_status_display }}
+            </span>
+          </td>
+          <td>{{ student.date_admitted|date:"d M Y"|default:"—" }}</td>
+          <td>
+            <div style="display: flex; gap: 6px;">
+              <a href="{% url 'students:detail' student.pk %}" class="btn btn-ghost btn-sm">View</a>
+              <a href="{% url 'students:update' student.pk %}" class="btn btn-ghost btn-sm">Edit</a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7">
+            <div class="empty-state">
+              <div class="empty-state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+              <div class="empty-state__title">No students found</div>
+              <div class="empty-state__text">Try adjusting your search or add a new student.</div>
+              <a href="{% url 'students:create' %}" class="btn btn-primary">Add First Student</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if students.has_other_pages %}
+  <div class="card__footer">
+    <nav class="pagination">
+      {% if students.has_previous %}<a href="?page={{ students.previous_page_number }}&q={{ q }}" class="pagination__item">‹ Prev</a>{% endif %}
+      {% for num in students.paginator.page_range %}
+        {% if num == students.number %}<span class="pagination__item active">{{ num }}</span>
+        {% elif num > students.number|add:'-3' and num < students.number|add:'3' %}<a href="?page={{ num }}&q={{ q }}" class="pagination__item">{{ num }}</a>{% endif %}
+      {% endfor %}
+      {% if students.has_next %}<a href="?page={{ students.next_page_number }}&q={{ q }}" class="pagination__item">Next ›</a>{% endif %}
+    </nav>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

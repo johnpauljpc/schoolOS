@@ -1,0 +1,13 @@
+{% extends 'base.html' %}{% block title %}Notifications{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header__left"><h1 class="page-header__title">Notifications</h1></div>
+<div class="page-header__actions"><button id="markAllReadBtn" data-url="{% url 'communication:notifications-mark-all' %}" class="btn btn-outline btn-sm">Mark all read</button></div></div>
+{% for notif in notifications %}<div class="card card--shadow" style="margin-bottom:10px;{% if not notif.is_read %}border-left:3px solid var(--clr-primary-500){% endif %}">
+<div class="card__body" style="padding:14px 20px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px">
+<div><div style="font-weight:{% if not notif.is_read %}700{% else %}500{% endif %};font-size:14px;margin-bottom:4px">{{ notif.title }}</div><div style="font-size:13px;color:var(--text-muted)">{{ notif.message }}</div></div>
+<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+<span style="font-size:11px;color:var(--text-muted)">{{ notif.created_at|timesince }} ago</span>
+{% if not notif.is_read %}<a href="{% url 'communication:notification-read' notif.pk %}" class="btn btn-primary btn-sm">Mark Read</a>{% endif %}
+</div></div></div>
+{% empty %}<div class="empty-state"><div class="empty-state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg></div><div class="empty-state__title">No notifications</div></div>{% endfor %}
+{% endblock %}

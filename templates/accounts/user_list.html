@@ -1,0 +1,13 @@
+{% extends 'base.html' %}{% block title %}Users{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header__left"><h1 class="page-header__title">User Management</h1></div><div class="page-header__actions"><a href="{% url 'accounts:user-create' %}" class="btn btn-primary">Add User</a></div></div>
+<div class="card card--shadow"><div class="table-container"><table class="table"><thead><tr><th>Username</th><th>Name</th><th>Role</th><th>Email Verified</th><th>Status</th><th>Joined</th><th>Actions</th></tr></thead><tbody>
+{% for u in users %}<tr><td style="font-family:var(--font-mono);font-size:12px">{{ u.username }}</td>
+<td style="font-weight:600">{{ u.get_full_name }}</td>
+<td>{{ u.get_role_display }}</td>
+<td><span class="badge badge-{% if u.is_email_verified %}success{% else %}muted{% endif %}">{% if u.is_email_verified %}Yes{% else %}No{% endif %}</span></td>
+<td><span class="badge badge-{% if u.is_active %}success{% else %}danger{% endif %}">{% if u.is_active %}Active{% else %}Inactive{% endif %}</span></td>
+<td style="font-size:13px;color:var(--text-muted)">{{ u.date_joined|date:"d M Y" }}</td>
+<td><div style="display:flex;gap:6px"><a href="{% url 'accounts:user-update' u.pk %}" class="btn btn-ghost btn-sm">Edit</a><a href="{% url 'accounts:user-toggle-active' u.pk %}" class="btn btn-ghost btn-sm" data-confirm="Toggle user status?">Toggle</a></div></td>
+</tr>{% empty %}<tr><td colspan="7" style="text-align:center;color:var(--text-muted)">No users found</td></tr>{% endfor %}
+</tbody></table></div></div>{% endblock %}

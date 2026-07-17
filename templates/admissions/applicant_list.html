@@ -1,0 +1,22 @@
+{% extends 'base.html' %}{% block title %}Admissions{% endblock %}
+{% block breadcrumb %}<span class="topbar__breadcrumb-current">Admissions</span>{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header__left"><h1 class="page-header__title">Admission Applications</h1></div>
+<div class="page-header__actions"><a href="{% url 'admissions:apply' %}" class="btn btn-primary" target="_blank">Application Form</a></div></div>
+<div class="card card--shadow" style="margin-bottom:16px"><div class="card__body" style="padding:12px 22px">
+<form method="get" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end">
+<div style="flex:1;min-width:200px"><div class="search-bar"><svg class="search-bar__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><input type="text" name="q" class="search-bar__input" placeholder="Search applicant…" value="{{ q|default:'' }}"></div></div>
+<select name="status" class="form-control" style="min-width:160px"><option value="">All Statuses</option>{% for val, label in statuses %}<option value="{{ val }}" {% if val == selected_status %}selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+<button type="submit" class="btn btn-primary">Filter</button></form></div></div>
+<div class="card card--shadow"><div class="table-container"><table class="table"><thead><tr><th>App. No.</th><th>Name</th><th>Class</th><th>Guardian</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>
+{% for a in applicants %}<tr>
+<td><code style="font-family:var(--font-mono);font-size:12px;color:var(--clr-primary-500)">{{ a.application_number }}</code></td>
+<td style="font-weight:600">{{ a.full_name }}</td>
+<td>{{ a.applying_for_class|default:"—" }}</td>
+<td>{{ a.guardian_name }}<br><span style="font-size:12px;color:var(--text-muted)">{{ a.guardian_phone }}</span></td>
+<td><span class="badge badge-{% if a.status == 'ADMITTED' %}success{% elif a.status == 'PENDING' %}warning{% elif a.status == 'REJECTED' %}danger{% else %}primary{% endif %}">{{ a.get_status_display }}</span></td>
+<td>{{ a.created_at|date:"d M Y" }}</td>
+<td><div style="display:flex;gap:6px"><a href="{% url 'admissions:applicant-detail' a.pk %}" class="btn btn-ghost btn-sm">View</a>{% if a.status == 'ADMITTED' %}<a href="{% url 'admissions:admission-letter-pdf' a.pk %}" class="btn btn-ghost btn-sm" target="_blank">Letter</a>{% endif %}</div></td>
+</tr>{% empty %}<tr><td colspan="7"><div class="empty-state"><div class="empty-state__title">No applications found</div></div></td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

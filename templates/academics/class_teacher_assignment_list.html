@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Class Teacher Assignments{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>👤 Class Teacher Assignments</h1>
+    <p class="breadcrumb">Academics › Class Teacher Assignments</p>
+  </div>
+  {% if request.user.role in "SUPER_ADMIN ICT_ADMIN PRINCIPAL VICE_PRINCIPAL" or request.user.is_superuser %}
+  <a href="{% url 'academics:class_teacher_assignment_create' %}" class="btn btn-primary">+ Assign Class Teacher</a>
+  {% endif %}
+</div>
+
+<!-- Filter -->
+<form method="get" style="display:flex;gap:.5rem;align-items:flex-end;margin-bottom:1rem;">
+  <div>
+    <label class="form-label" style="font-size:.8rem;">Session</label>
+    <select name="session" class="form-control" style="min-width:180px;">
+      <option value="">All Sessions</option>
+      {% for s in sessions %}
+      <option value="{{ s.pk }}" {% if filter_session == s.pk|stringformat:"s" %}selected{% endif %}>{{ s.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn btn-outline">Filter</button>
+  <a href="{% url 'academics:class_teacher_assignment_list' %}" class="btn btn-secondary">Reset</a>
+</form>
+
+<div class="card">
+  <div class="table-responsive">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Class Teacher</th>
+          <th>Class Arm</th>
+          <th>Session</th>
+          <th>Assigned</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for assignment in assignments %}
+        <tr>
+          <td>{{ forloop.counter0|add:page_obj.start_index }}</td>
+          <td>
+            <strong>{{ assignment.teacher.get_full_name }}</strong>
+            <br><small style="color:var(--clr-muted);">{{ assignment.teacher.get_role_display }}</small>
+          </td>
+          <td>{{ assignment.class_arm }}</td>
+          <td>{{ assignment.session.name }}</td>
+          <td>{{ assignment.created_at|date:"d M Y" }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="5">
+            <div class="empty-state">
+              <h3>No class teacher assignments yet.</h3>
+              <a href="{% url 'academics:class_teacher_assignment_create' %}" class="btn btn-primary" style="margin-top:.75rem;">Assign First Class Teacher</a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% if page_obj.has_other_pages %}
+<div class="pagination">
+  {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}">‹ Prev</a>{% endif %}
+  {% for num in page_obj.paginator.page_range %}
+    {% if page_obj.number == num %}<span class="current">{{ num }}</span>
+    {% else %}<a href="?page={{ num }}">{{ num }}</a>{% endif %}
+  {% endfor %}
+  {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}">Next ›</a>{% endif %}
+</div>
+{% endif %}
+{% endblock %}
