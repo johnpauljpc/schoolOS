@@ -7,7 +7,7 @@
     <h1>👩‍🏫 Subject Assignments</h1>
     <p class="breadcrumb">Academics › Subject Assignments</p>
   </div>
-  {% if request.user.role in "SUPER_ADMIN ICT_ADMIN PRINCIPAL VICE_PRINCIPAL" or request.user.is_superuser %}
+  {% if is_senior_staff %}
   <a href="{% url 'academics:subject_assignment_create' %}" class="btn btn-primary">+ Assign Subject</a>
   {% endif %}
 </div>

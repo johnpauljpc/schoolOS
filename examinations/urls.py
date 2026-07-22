@@ -21,7 +21,7 @@ urlpatterns = [
     path('results/approve/', views.result_approve_view, name='result-approve'),
     path('results/publish/', views.result_publish_view, name='result-publish'),
     # Report Card
-    path('results/report-card/', views.student_report_card_view, name='report-card'),
+    path('results/report-card/<int:student_id>/', views.student_report_card_view, name='report-card'),
     path('results/report-card/<int:student_id>/pdf/', views.report_card_pdf_view, name='report-card-pdf'),
     path('results/transcript/<int:student_id>/pdf/', views.transcript_pdf_view, name='transcript-pdf'),
     # Timetables

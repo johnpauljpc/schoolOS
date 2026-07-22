@@ -1,7 +1,7 @@
 {% extends 'base.html' %}{% block title %}Announcements{% endblock %}
 {% block content %}
 <div class="page-header"><div class="page-header__left"><h1 class="page-header__title">Announcements</h1></div>
-{% if request.user.role in 'SUPER_ADMIN,ICT_ADMIN,PRINCIPAL,VICE_PRINCIPAL'|split:',' %}<div class="page-header__actions"><a href="{% url 'communication:announcement-create' %}" class="btn btn-primary">New Announcement</a><a href="{% url 'communication:manage' %}" class="btn btn-outline">Manage</a></div>{% endif %}</div>
+{% if is_senior_staff %}<div class="page-header__actions"><a href="{% url 'communication:announcement-create' %}" class="btn btn-primary">New Announcement</a><a href="{% url 'communication:manage' %}" class="btn btn-outline">Manage</a></div>{% endif %}</div>
 {% for ann in announcements %}<div class="card card--shadow" style="margin-bottom:14px">
 <div class="card__body" style="padding:20px 24px">
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">

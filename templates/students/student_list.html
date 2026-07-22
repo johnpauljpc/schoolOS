@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}Students{% endblock %}
-{% block breadcrumb %}<a href="{% url 'students:list' %}">Students</a>{% endblock %}
+{% block breadcrumb %}<a href="{% url 'students:student_list' %}">Students</a>{% endblock %}
 {% block content %}
 <div class="page-header">
   <div class="page-header__left">
@@ -8,7 +8,7 @@
     <p class="page-header__subtitle">Manage all enrolled students</p>
   </div>
   <div class="page-header__actions">
-    <a href="{% url 'students:create' %}" class="btn btn-primary">
+    <a href="{% url 'students:student_create' %}" class="btn btn-primary">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       Add Student
     </a>
@@ -42,7 +42,7 @@
         </select>
       </div>
       <button type="submit" class="btn btn-primary">Filter</button>
-      <a href="{% url 'students:list' %}" class="btn btn-ghost">Clear</a>
+      <a href="{% url 'students:student_list' %}" class="btn btn-ghost">Clear</a>
     </form>
   </div>
 </div>
@@ -85,8 +85,8 @@
           <td>{{ student.date_admitted|date:"d M Y"|default:"—" }}</td>
           <td>
             <div style="display: flex; gap: 6px;">
-              <a href="{% url 'students:detail' student.pk %}" class="btn btn-ghost btn-sm">View</a>
-              <a href="{% url 'students:update' student.pk %}" class="btn btn-ghost btn-sm">Edit</a>
+              <a href="{% url 'students:student_detail' student.pk %}" class="btn btn-ghost btn-sm">View</a>
+              <a href="{% url 'students:student_update' student.pk %}" class="btn btn-ghost btn-sm">Edit</a>
             </div>
           </td>
         </tr>
@@ -97,7 +97,7 @@
               <div class="empty-state__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
               <div class="empty-state__title">No students found</div>
               <div class="empty-state__text">Try adjusting your search or add a new student.</div>
-              <a href="{% url 'students:create' %}" class="btn btn-primary">Add First Student</a>
+              <a href="{% url 'students:student_create' %}" class="btn btn-primary">Add First Student</a>
             </div>
           </td>
         </tr>

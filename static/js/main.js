@@ -201,3 +201,56 @@ document.querySelectorAll('[data-format-number]').forEach(el => {
     }
   });
 })();
+
+// ─── Password show / hide toggle ──────────────────────────────
+// Automatically wraps every input[type=password] with an eye button.
+// Works on every page, every form — no per-template markup needed.
+(function initPasswordToggles() {
+  // SVG icons (inline so they work without a sprite)
+  const eyeIcon = `
+    <svg class="icon-eye" width="18" height="18" viewBox="0 0 24 24"
+         fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+      <circle cx="12" cy="12" r="3"/>
+    </svg>`;
+  const eyeOffIcon = `
+    <svg class="icon-eye-off" width="18" height="18" viewBox="0 0 24 24"
+         fill="none" stroke="currentColor" stroke-width="2"
+         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8
+               a18.45 18.45 0 015.06-5.94"/>
+      <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8
+               a18.5 18.5 0 01-2.16 3.19"/>
+      <line x1="1" y1="1" x2="23" y2="23"/>
+    </svg>`;
+
+  document.querySelectorAll('input[type="password"]').forEach(input => {
+    // Skip if already wrapped (e.g. login.html had its own toggle)
+    if (input.closest('.password-wrapper')) return;
+
+    // Wrap the input
+    const wrapper = document.createElement('div');
+    wrapper.className = 'password-wrapper';
+    input.parentNode.insertBefore(wrapper, input);
+    wrapper.appendChild(input);
+
+    // Build the toggle button
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'password-toggle';
+    btn.setAttribute('aria-label', 'Show password');
+    btn.innerHTML = eyeIcon + eyeOffIcon;
+    wrapper.appendChild(btn);
+
+    // Toggle behaviour
+    btn.addEventListener('click', () => {
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      btn.classList.toggle('is-showing', isHidden);
+      btn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+      // Keep focus on the input after clicking the button
+      input.focus();
+    });
+  });
+})();

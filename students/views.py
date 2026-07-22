@@ -212,7 +212,7 @@ def student_create_view(request):
     else:
         form = StudentUserCreateForm()
 
-    return render(request, 'students/student_create.html', {
+    return render(request, 'students/student_form.html', {
         'form': form,
         'page_title': 'Enrol New Student',
     })

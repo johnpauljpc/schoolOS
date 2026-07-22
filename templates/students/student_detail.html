@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block title %}{{ student.full_name }}{% endblock %}
-{% block breadcrumb %}<a href="{% url 'students:list' %}">Students</a> <span class="topbar__breadcrumb-sep">›</span> <span class="topbar__breadcrumb-current">{{ student.full_name }}</span>{% endblock %}
+{% block breadcrumb %}<a href="{% url 'students:student_list' %}">Students</a> <span class="topbar__breadcrumb-sep">›</span> <span class="topbar__breadcrumb-current">{{ student.full_name }}</span>{% endblock %}
 {% block content %}
 <div class="page-header">
   <div class="page-header__left">
@@ -8,7 +8,7 @@
     <p class="page-header__subtitle">Admission No: {{ student.admission_number }}</p>
   </div>
   <div class="page-header__actions">
-    <a href="{% url 'students:update' student.pk %}" class="btn btn-outline">Edit Profile</a>
+    <a href="{% url 'students:student_update' student.pk %}" class="btn btn-outline">Edit Profile</a>
     <a href="{% url 'examinations:report-card' student.pk %}" class="btn btn-primary">View Report Card</a>
   </div>
 </div>
@@ -31,7 +31,7 @@
   </div>
   <div>
     <div class="card card--shadow" style="margin-bottom:16px">
-      <div class="card__header"><span class="card__title">Documents</span><a href="{% url 'students:document-upload' student.pk %}" class="btn btn-primary btn-sm">Upload</a></div>
+      <div class="card__header"><span class="card__title">Documents</span><a href="{% url 'students:student_document_upload' student.pk %}" class="btn btn-primary btn-sm">Upload</a></div>
       <div class="card__body">
         {% for doc in student.documents.all %}
         <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border-color)">
@@ -42,7 +42,7 @@
       </div>
     </div>
     <div class="card card--shadow">
-      <div class="card__header"><span class="card__title">Medical Info</span><a href="{% url 'students:medical-update' student.pk %}" class="btn btn-ghost btn-sm">Edit</a></div>
+      <div class="card__header"><span class="card__title">Medical Info</span><a href="{% url 'students:student_medical_update' student.pk %}" class="btn btn-ghost btn-sm">Edit</a></div>
       <div class="card__body">
         {% if student.medical_info %}
         <table style="width:100%;font-size:13px">

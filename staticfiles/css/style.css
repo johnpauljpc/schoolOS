@@ -666,6 +666,58 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .form-control.is-invalid { border-color: var(--clr-danger); }
 .form-control.is-valid { border-color: var(--clr-success); }
 
+/* ─── Password field with show/hide toggle ───────────────────── */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.password-wrapper .form-control {
+  /* room for the eye icon */
+  padding-right: 44px;
+}
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  transition: color var(--transition-fast), background var(--transition-fast);
+  flex-shrink: 0;
+}
+.password-toggle:hover {
+  color: var(--clr-primary-500);
+  background: var(--bg-muted);
+}
+.password-toggle:focus-visible {
+  outline: 2px solid var(--clr-primary-400);
+  outline-offset: 2px;
+}
+/* eye-off icon hidden by default; shown when password is visible */
+.password-toggle .icon-eye     { display: block; }
+.password-toggle .icon-eye-off { display: none;  }
+.password-toggle.is-showing .icon-eye     { display: none;  }
+.password-toggle.is-showing .icon-eye-off { display: block; }
+
+/* Dark auth-card variant */
+.auth-card .password-toggle {
+  color: hsl(215, 15%, 45%);
+}
+.auth-card .password-toggle:hover {
+  color: hsl(0, 0%, 100%);
+  background: hsl(222, 40%, 20%);
+}
+
 /* Checkbox & Radio */
 .form-check {
   display: flex;

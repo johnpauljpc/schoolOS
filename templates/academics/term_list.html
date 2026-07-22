@@ -7,7 +7,7 @@
     <h1>📆 Academic Terms</h1>
     <p class="breadcrumb">Academics › Terms</p>
   </div>
-  {% if request.user.role in "SUPER_ADMIN ICT_ADMIN PRINCIPAL VICE_PRINCIPAL" or request.user.is_superuser %}
+  {% if is_senior_staff %}
   <a href="{% url 'academics:term_create' %}" class="btn btn-primary">+ New Term</a>
   {% endif %}
 </div>

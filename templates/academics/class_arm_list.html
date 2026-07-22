@@ -7,7 +7,7 @@
     <h1>🔤 Class Arms</h1>
     <p class="breadcrumb">Academics › Class Arms</p>
   </div>
-  {% if request.user.role in "SUPER_ADMIN ICT_ADMIN PRINCIPAL VICE_PRINCIPAL" or request.user.is_superuser %}
+  {% if is_senior_staff %}
   <a href="{% url 'academics:class_arm_create' %}" class="btn btn-primary">+ New Class Arm</a>
   {% endif %}
 </div>

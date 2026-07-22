@@ -7,7 +7,7 @@
     <h1>📅 Academic Sessions</h1>
     <p class="breadcrumb">Academics › Sessions</p>
   </div>
-  {% if request.user.role in "SUPER_ADMIN ICT_ADMIN PRINCIPAL VICE_PRINCIPAL" or request.user.is_superuser %}
+  {% if is_senior_staff %}
   <a href="{% url 'academics:session_create' %}" class="btn btn-primary">+ New Session</a>
   {% endif %}
 </div>
