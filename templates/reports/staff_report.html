@@ -1,0 +1,36 @@
+{% extends 'base.html' %}{% block title %}Staff Report{% endblock %}
+{% block content %}
+<div class="page-header"><div class="page-header__left"><h1 class="page-header__title">Staff Report</h1></div></div>
+<div class="stat-grid" style="margin-bottom:20px">
+<div class="stat-card stat-card--blue"><div class="stat-card__info"><div class="stat-card__label">Total</div><div class="stat-card__value">{{ summary.total }}</div></div></div>
+<div class="stat-card stat-card--green"><div class="stat-card__info"><div class="stat-card__label">Active</div><div class="stat-card__value">{{ summary.active }}</div></div></div>
+<div class="stat-card stat-card--red"><div class="stat-card__info"><div class="stat-card__label">Inactive</div><div class="stat-card__value">{{ summary.inactive }}</div></div></div>
+</div>
+<div class="card card--shadow" style="margin-bottom:20px">
+<div class="card__body">
+<form method="get" style="display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap">
+<div>
+<label style="display:block;font-size:13px;font-weight:600;margin-bottom:4px;color:var(--text-secondary)">Department</label>
+<select name="department" class="form-control" style="min-width:180px">
+<option value="">All Departments</option>
+{% for dept in departments %}<option value="{{ dept.pk }}"{% if selected_dept == dept.pk|stringformat:"s" %} selected{% endif %}>{{ dept.name }}</option>{% endfor %}
+</select>
+</div>
+<button type="submit" class="btn btn-primary">Filter</button>
+{% if selected_dept %}<a href="{% url 'reports:staff' %}" class="btn btn-secondary">Clear</a>{% endif %}
+</form>
+</div>
+</div>
+<div class="card card--shadow"><div class="table-container"><table class="table"><thead><tr><th>Staff ID</th><th>Name</th><th>Department</th><th>Designation</th><th>Employment Type</th><th>Date Joined</th><th>Status</th></tr></thead><tbody>
+{% for s in staff %}<tr>
+<td>{{ s.staff_id }}</td>
+<td><a href="{% url 'staff:detail' s.pk %}">{{ s.user.get_full_name }}</a></td>
+<td>{{ s.department|default:"—" }}</td>
+<td>{{ s.designation|default:"—" }}</td>
+<td>{{ s.get_employment_type_display }}</td>
+<td>{{ s.date_joined|date:"d M Y"|default:"—" }}</td>
+<td><span class="badge badge-{% if s.is_active %}success{% else %}danger{% endif %}">{% if s.is_active %}Active{% else %}Inactive{% endif %}</span></td>
+</tr>
+{% empty %}<tr><td colspan="7" style="text-align:center;color:var(--text-muted)">No staff found</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}
